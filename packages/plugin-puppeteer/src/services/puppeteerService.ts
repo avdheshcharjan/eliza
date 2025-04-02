@@ -1,4 +1,4 @@
-import { type IAgentRuntime, elizaLogger, type Service, ServiceType as CoreServiceType } from "@elizaos/core";
+import { IAgentRuntime, elizaLogger, Service, type ServiceType as CoreServiceType } from "@elizaos/core";
 import * as puppeteer from "puppeteer";
 import { getPuppeteerConfig } from "../environment";
 import { existsSync } from "fs";
@@ -44,8 +44,11 @@ export const ServiceType = {
     PUPPETEER: "PUPPETEER_SERVICE" as CoreServiceType
 };
 
-export class PuppeteerService implements Service {
-    serviceType: CoreServiceType = ServiceType.PUPPETEER;
+export class PuppeteerService extends Service {
+    static get serviceType(): CoreServiceType {
+        return ServiceType.PUPPETEER;
+    }
+
     private browser: puppeteer.Browser | null = null;
 
     async initialize(runtime: IAgentRuntime): Promise<void> {

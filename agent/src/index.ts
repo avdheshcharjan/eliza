@@ -22,8 +22,8 @@ import {
 import { defaultCharacter } from "./defaultCharacter.ts";
 
 import { bootstrapPlugin } from "@elizaos/plugin-bootstrap";
+import { puppeteerPlugin } from "@elizaos-plugins/plugin-puppeteer";
 import JSON5 from 'json5';
-
 import fs from "fs";
 import net from "net";
 import os from "os";
@@ -371,12 +371,10 @@ export async function loadCharacters(
 
 async function handlePluginImporting(plugins: string[]) {
     if (plugins.length > 0) {
-        // this logging should happen before calling, so we can include important context
-        //elizaLogger.info("Plugins are: ", plugins);
         const importedPlugins = await Promise.all(
             plugins.map(async (plugin) => {
                 try {
-                    const importedPlugin:Plugin = await import(plugin);
+                    const importedPlugin = await import(plugin) as { [key: string]: any };
                     const functionName =
                         plugin
                             .replace("@elizaos/plugin-", "")
@@ -627,6 +625,7 @@ export async function createAgent(
         // character.plugins are handled when clients are added
         plugins: [
             bootstrapPlugin,
+            puppeteerPlugin
         ]
             .flat()
             .filter(Boolean),
